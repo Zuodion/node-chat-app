@@ -14,14 +14,32 @@ let io = socketIO(server);
 io.on('connection', (socket)=> {//позволяет делать операции с ивентами
     console.log('New user connected');//например тригерить на нового юзера
 
+        socket.emit('newMessage', {
+            from: 'Admin',
+            text: 'Welcome to the chat app',
+            createdAt: new Date().getTime
+        });
+
+        socket.broadcast.emit('newMessage', {//при заходе на сайт отсылает всем пользователям КРОМЕ зашедшего сообщение
+            from: 'Admin',
+            text: 'New user joined',
+            createdAt: new Date().getTime
+        });
+
     socket.on('createMessage', (message) => {//создать и послать письмо - от клиента к серверу
         console.log('createMessage', message);
-        io.emit('newMessage', {
+        io.emit('newMessage', {//сообщение от сервера к клиенту
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime
-        })
+        });
     });
+    //     socket.broadcast.emit('newMessage', {
+    //         from: message.from,
+    //         text: message.text,
+    //         createdAt: new Date().getTime
+    //     });
+    // });
 
     socket.on('disconnect', () => {//тригерится на отключение от сервера юзера и пишет в консоль сервера
         console.log('Disconnected from server');
@@ -32,3 +50,4 @@ io.on('connection', (socket)=> {//позволяет делать операци
 server.listen(port, () => {
     console.log(`Server is up on port ${port}`);
 });
+
