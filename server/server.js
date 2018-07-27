@@ -19,16 +19,11 @@ io.on('connection', (socket)=> {//позволяет делать операци
 
         socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User joined'));
 
-    socket.on('createMessage', (message) => {//создать и послать письмо - от клиента к серверу
+    socket.on('createMessage', (message, callback) => {//создать и послать письмо - от клиента к серверу
         console.log('createMessage', message);
         io.emit('newMessage', generateMessage(message.from, message.text));
+        callback('\nThis is from the server');
     });
-    //     socket.broadcast.emit('newMessage', {
-    //         from: message.from,
-    //         text: message.text,
-    //         createdAt: new Date().getTime
-    //     });
-    // });
 
     socket.on('disconnect', () => {//тригерится на отключение от сервера юзера и пишет в консоль сервера
         console.log('Disconnected from server');
@@ -40,3 +35,9 @@ server.listen(port, () => {
     console.log(`Server is up on port ${port}`);
 });
 
+//     socket.broadcast.emit('newMessage', {
+//         from: message.from,
+//         text: message.text,
+//         createdAt: new Date().getTime
+//     });
+// });
