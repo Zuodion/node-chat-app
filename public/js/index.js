@@ -18,7 +18,7 @@ socket.on('newMessage', (message) => {
 
 socket.on('newLocationMessage', (message) => {
     let li = jQuery('<li></li>');
-    let a = jQuery('<a target="_blank">My current location</a>');//blank - с нового окна
+    let a = jQuery('<a target="_blank">Я здесь</a>');//blank - с нового окна
     li.text(`${message.from}: `);
     a.attr('href', message.url);//attr Получает/устанавливает значение атрибутов выбранных элементов(кароче заменяет href на message.url)
     li.append(a);
