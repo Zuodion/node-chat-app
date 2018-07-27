@@ -4,7 +4,7 @@ const app = express();
 const socketIO = require('socket.io');
 const http = require('http');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage,generateLocationMessage} = require('./utils/message');
 const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, '../public');
 let server = http.createServer(app);
@@ -24,6 +24,11 @@ io.on('connection', (socket)=> {//позволяет делать операци
         io.emit('newMessage', generateMessage(message.from, message.text));
         callback('\nThis is from the server');
     });
+
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+    });
+
 
     socket.on('disconnect', () => {//тригерится на отключение от сервера юзера и пишет в консоль сервера
         console.log('Disconnected from server');
