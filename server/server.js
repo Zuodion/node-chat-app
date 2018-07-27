@@ -14,14 +14,13 @@ let io = socketIO(server);
 io.on('connection', (socket)=> {//позволяет делать операции с ивентами
     console.log('New user connected');//например тригерить на нового юзера
 
-    socket.emit('newMessage', {//Новое письмо - сервер шлет клиенту
-        from: 'He-man',
-        text: 'Hey. Whats going on',
-        createdAt: new Date().toString()
-    });
-
     socket.on('createMessage', (message) => {//создать и послать письмо - от клиента к серверу
         console.log('createMessage', message);
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime
+        })
     });
 
     socket.on('disconnect', () => {//тригерится на отключение от сервера юзера и пишет в консоль сервера
