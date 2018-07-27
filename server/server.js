@@ -15,7 +15,7 @@ let io = socketIO(server);
 io.on('connection', (socket)=> {//позволяет делать операции с ивентами
     console.log('New user connected');//например тригерить на нового юзера
 
-        socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+        socket.emit('newMessage', generateMessage('Admin', 'Добро пожаловать!'));
 
         socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User joined'));
 
