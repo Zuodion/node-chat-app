@@ -10,16 +10,18 @@ socket.on('disconnect', () => {//тригерится на отключение 
 });
 
 socket.on('newMessage', (message) => {
+    let formattedTime = moment(message.createdAt).format('H:mm');//отсылает время
     console.log('New message', message);//клиент посылает на сервер сообщение, а ниже jQuery обрабатывает и помещает его
     let li = jQuery('<li></li>');//li - новая форма
-    li.text(`${message.from}: ${message.text}`);// собственно придание li формы от кого, и сам текст
+    li.text(`${formattedTime} ${message.from}: ${message.text}`);// собственно придание li формы от кого, и сам текст
     jQuery('#messages').append(li);//добавление в список сообщений с id(номером) который берется из index.html<ol>
 });
 
 socket.on('newLocationMessage', (message) => {
+    let formattedTime = moment(message.createdAt).format('H:mm');//отсылает время
     let li = jQuery('<li></li>');
     let a = jQuery('<a target="_blank">Я здесь</a>');//blank - с нового окна
-    li.text(`${message.from}: `);
+    li.text(`${formattedTime} ${message.from}: `);
     a.attr('href', message.url);//attr Получает/устанавливает значение атрибутов выбранных элементов(кароче заменяет href на message.url)
     li.append(a);
     jQuery('#messages').append(li);
