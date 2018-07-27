@@ -27,11 +27,14 @@ socket.on('newLocationMessage', (message) => {
 
 jQuery('#message-form').on('submit', (e) => {//событие submit и функция, которая выполняется после submit
     e.preventDefault();//кароче делает так чтобы в командной строке не образовывалось сообщение которое мы сабмитнули
+
+    let messageTextbox = jQuery('[name=message]')
+
     socket.emit('createMessage', {//отправка от сервера к клиенту
         from: 'User',
-        text: jQuery('[name=message]').val(),//селектор до поля, куди вводиться повідомлення, получает значение, что ввели в name=message
+        text: messageTextbox.val(),//селектор до поля, куди вводиться повідомлення, получает значение, что ввели в name=message
     }, () => {
-        jQuery('#message-form')[0].reset();//очистка формы после отправки
+        messageTextbox.val('');//очистка формы после отправки
     });
 
 
@@ -43,12 +46,16 @@ locationButton.on('click', () => {
         return alert('Geolocation not supported by your browser');
     }
 
+    locationButton.attr('disabled', 'disabled').text('Отправка местоположения');
+
     navigator.geolocation.getCurrentPosition( (position) => {
-    socket.emit('createLocationMessage', {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-    });
-    }, () => {
+        locationButton.removeAttr('disabled').text('Расказать о своём местоположении');//отключает кнопку на время получения координат
+        socket.emit('createLocationMessage', {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        });
+        }, () => {
+        locationButton.removeAttr('disabled').text('Расказать о своём местоположении');
         alert('Unable to fetch location');
     });
 });
