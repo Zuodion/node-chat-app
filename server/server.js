@@ -39,7 +39,6 @@ io.on('connection', (socket)=> {//позволяет делать операци
 server.listen(port, () => {
     console.log(`Server is up on port ${port}`);
 });
-
 //     socket.broadcast.emit('newMessage', {
 //         from: message.from,
 //         text: message.text,

@@ -1,5 +1,21 @@
 let socket = io();
 
+function scrollToBottom() {
+    // Selectors
+    let messages = jQuery('#messages');
+    let newMessage = messages.children('li:last-child');//последний наследник элемента li
+    //Height
+    let clientHeight = messages.prop('clientHeight');
+    let scrollTop = messages.prop('scrollTop');
+    let scrollHeight = messages.prop('scrollHeight');
+    let newMessageHeight = newMessage.innerHeight();
+    let lastMessageHeight = newMessage.prev().innerHeight();
+
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 socket.on('connect', () => {// тоже прослушивание нового ивента(тригерится на подключение к серверу), но пишет это в консоле браузера(со стороны юзера)
     console.log('Connected to server');
 
@@ -19,7 +35,7 @@ socket.on('newMessage', (message) => {
     });
 
     jQuery('#messages').append(html);//добавляет выше собраное сообщение
-
+    scrollToBottom();
 //     let li = jQuery('<li></li>');//li - новая форма
 //     li.text(`${formattedTime} ${message.from}: ${message.text}`);// собственно придание li формы от кого, и сам текст
 //     jQuery('#messages').append(li);//добавление в список сообщений с id(номером) который берется из index.html<ol>
@@ -34,6 +50,7 @@ socket.on('newLocationMessage', (message) => {
         url: message.url
     });
     jQuery('#messages').append(html);
+    scrollToBottom();
     // let li = jQuery('<li></li>');
     // let a = jQuery('<a target="_blank">Я здесь</a>');//blank - с нового окна
     // li.text(`${formattedTime} ${message.from}: `);
