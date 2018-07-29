@@ -77,11 +77,10 @@ socket.on('newLocationMessage', (message) => {
 
 jQuery('#message-form').on('submit', (e) => {//событие submit и функция, которая выполняется после submit
     e.preventDefault();//кароче делает так чтобы в командной строке не образовывалось сообщение которое мы сабмитнули
-
     let messageTextbox = jQuery('[name=message]');
 
     socket.emit('createMessage', {//отправка от сервера к клиенту
-        from: 'User',
+        from: undefined,//потомучто и так заменится
         text: messageTextbox.val(),//селектор до поля, куди вводиться повідомлення, получает значение, что ввели в name=message
     }, () => {
         messageTextbox.val('');//очистка формы после отправки
