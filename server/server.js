@@ -3,21 +3,34 @@ const express = require('express');
 const app = express();
 const socketIO = require('socket.io');
 const http = require('http');
-
+const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
 const {generateMessage,generateLocationMessage} = require('./utils/message');
 const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, '../public');
 let server = http.createServer(app);
 app.use(express.static(publicPath));
 let io = socketIO(server);
-
+let users = new Users();
 
 io.on('connection', (socket)=> {//позволяет делать операции с ивентами
     console.log('New user connected');//например тригерить на нового юзера
 
-        socket.emit('newMessage', generateMessage('Admin', 'Добро пожаловать!'));
 
-        socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User joined'));
+    socket.on('join', (params, callback) => {
+        if (!isRealString(params.name) || !isRealString(params.room)) {
+            return callback ('Введите корректно имя и название комнаты!');
+        }
+        socket.join(params.room);
+        users.removeUser(socket.id);
+        users.addUser(socket.id, params.name, params.room);
+
+        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+
+        socket.emit('newMessage', generateMessage('Admin', 'Добро пожаловать!'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} присоединяется`));
+        callback()
+    });
 
     socket.on('createMessage', (message, callback) => {//создать и послать письмо - от клиента к серверу
         console.log('createMessage', message);
@@ -31,7 +44,11 @@ io.on('connection', (socket)=> {//позволяет делать операци
 
 
     socket.on('disconnect', () => {//тригерится на отключение от сервера юзера и пишет в консоль сервера
-        console.log('Disconnected from server');
+        let user = users.removeUser(socket.id);
+        if (user) {
+            io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} вышел.`));
+        }
     });
 });
 
