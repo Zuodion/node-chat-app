@@ -1,22 +1,3 @@
-[{
-    id: '/$fe4we4fefrfe',
-    name: 'Sanya',
-    room: 'Lalki'
-}]
-
-// class Person{
-//     constructor (name, age) {//функция
-//         this.name = name;
-//         this.age = age;
-//     }
-//     getUserDescription () {
-//         return `${this.name} is ${this.age} year(s) old.`;
-//     }
-// }
-// let me = new Person('Sanya', 20);
-// let description = me.getUserDescription();
-// console.log(description);
-
 class Users {
     constructor () {
         this.users = [];
